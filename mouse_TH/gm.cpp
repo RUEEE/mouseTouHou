@@ -24,7 +24,17 @@ void init()
 	Game::allGm[5] = Game(16,		0x004A6EF8, 0x61C,		(float*)0x004A5788, 0.065f, 0.125f, 0.635f, 0.93125f, L"th16.exe");
 
 	Game::allGm[6] = Game(14,		0x004DB67C, 0x5EC,		(float*)0x004D8F58, 0.065f, 0.125f, 0.635f, 0.93125f, L"th14.exe");
-	
+
+	Game::allGm[7] = Game(10,		0x00477834, 0x3CC,		(float*)0x00476F78, 0.065f, 0.125f, 0.635f, 0.93125f, L"th10.exe",100.0f);
+	Game::allGm[8] = Game(10,		0x00477834, 0x3CC,		(float*)0x00476F78, 0.065f, 0.125f, 0.635f, 0.93125f, L"th10c.exe",100.0f);
+
+	Game::allGm[9] = Game(8,		0x017D61AC ,0x0,		(float*)0x017CE8E0, 0.065f, 0.125f, 0.635f, 0.93125f, L"th08.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
+
+	Game::allGm[10] = Game(7,		0x004BE408 ,0x0,		(float*)0x00575AC8, 0.065f, 0.125f, 0.635f, 0.93125f, L"th07.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
+
+	Game::allGm[11] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.125f, 0.635f, 0.93125f, L"搶曽峠杺嫿.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
+	Game::allGm[12] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.125f, 0.635f, 0.93125f, L"th06.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
+	Game::allGm[13] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.125f, 0.635f, 0.93125f, L"東方紅魔郷.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
 }
 
 void GetGame(HANDLE &gmHwnd, int &GmNum,int& pid,int &ArrNum)
@@ -50,12 +60,18 @@ DWORD Game::isInGm()
 	DWORD ptPl=NULL;
 	switch (this->num)
 	{
+	case 10:
 	case 12:
 	case 13:
 	case 14:
 	case 15:
 	case 16:
 		ReadProcessMemory(GM_HWND, (LPCVOID)this->ptPlBasic, &ptPl, sizeof(DWORD), NULL);
+		break;
+	case 8:
+	case 7:
+	case 6:
+		ptPl = -1;
 		break;
 	default:
 		ReadProcessMemory(GM_HWND, (LPCVOID)this->ptPlBasic, &ptPl, sizeof(DWORD), NULL);
@@ -82,12 +98,9 @@ int Game::MouseControl()
 		return PAUSE_FLAG;
 	RECT windRect;
 	POINT mousePos;
-	int ptXPos=(ptPl+this->ptPloffs);
-	int ptYPos=(ptPl+this->ptPloffs+4);
 	GetCursorPos(&mousePos);//获取鼠标坐标
 	GetWindowRect(WIND_HWND, &windRect);//获取窗口坐标 
 	float relX,relY;
-	int finalX, finalY;
 	relX = (float)(mousePos.x - windRect.left) / (float)(windRect.right - windRect.left);
 	relY = (float)(mousePos.y - windRect.top) / (float)(windRect.bottom - windRect.top);
 	if (relX < this->xmin)relX = this->xmin;
@@ -96,9 +109,38 @@ int Game::MouseControl()
 	if (relY > this->ymax)relY = this->ymax;
 	relX = (relX - this->xmin) / xsz;
 	relY = (relY - this->ymin) / ysz;
-	finalX = (int)(this->StageXMin + relX * StageXSz) * ratio;
-	finalY = (int)(this->StageYMin + relY * StageYSz) * ratio;
-	WriteProcessMemory(GM_HWND, (LPVOID)ptXPos, &finalX, sizeof(DWORD), NULL);
-	WriteProcessMemory(GM_HWND, (LPVOID)ptYPos, &finalY, sizeof(DWORD), NULL);
+
+	switch (this->num)
+	{
+	case 10:
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+	case 16:
+	{
+		int finalX, finalY;
+		finalX = (int)(this->StageXMin + relX * StageXSz) * ratio;
+		finalY = (int)(this->StageYMin + relY * StageYSz) * ratio;
+		WriteProcessMemory(GM_HWND, (LPVOID)(ptPl + this->ptPloffs), &finalX, sizeof(DWORD), NULL);
+		WriteProcessMemory(GM_HWND, (LPVOID)(ptPl + this->ptPloffs + 4), &finalY, sizeof(DWORD), NULL);
+	}
+
+		break;
+	case 8:
+	case 7:
+	case 6:
+	{
+		float fFx, fFy;
+		fFx = (this->StageXMin + relX * StageXSz);
+		fFy = (this->StageYMin + relY * StageYSz);
+		WriteProcessMemory(GM_HWND, (LPVOID)this->ptPlBasic, &fFx, sizeof(DWORD), NULL);
+		WriteProcessMemory(GM_HWND, (LPVOID)(this->ptPlBasic + 4), &fFy, sizeof(DWORD), NULL);
+	}
+		break;
+	default:
+		break;
+	}
+
 	return NORMAL_FLAG;
 }
