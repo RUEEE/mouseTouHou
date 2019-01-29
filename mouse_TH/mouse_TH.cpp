@@ -2,20 +2,43 @@
 //
 
 #include "pch.h"
-#include <iostream>
-
+#include "gm.h"
+using namespace std;
+extern HANDLE GM_HWND;
+extern int NW_GAME;
+extern int PID;
+extern int ARR_NUM;
+extern HWND WIND_HWND;
+WCHAR OUT_TEXT[256];
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	int timeNw,timePre;
+	init();
+	GetGame(GM_HWND, NW_GAME,PID, ARR_NUM);
+	timePre = GetTickCount();
+	if (GM_HWND != NULL)
+	{
+		wsprintf(OUT_TEXT,L"进程pid号:%d\n当前游戏版本:%d", PID, Game::allGm[ARR_NUM].num);
+		MessageBox(NULL, OUT_TEXT, L"加载成功", MB_OK);
+		Game& nwGame = Game::allGm[ARR_NUM];
+		while (1){
+			timeNw = GetTickCount();
+			if (timeNw - timePre >= 1){
+				system("cls");
+				timePre = timeNw;
+				switch (nwGame.MouseControl())
+				{
+				case NORMAL_FLAG:
+					break;
+				case PAUSE_FLAG:
+					cout << "时停中不能移动da☆ze";
+					break;
+				case NOT_IN_GAME_FLAG:
+					cout << "未发现自机坐标,请进入游戏\n";
+					Sleep(100);
+					break;
+				}
+			}
+		}
+	}
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门提示: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件

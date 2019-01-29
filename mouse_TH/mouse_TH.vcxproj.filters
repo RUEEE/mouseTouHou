@@ -18,12 +18,24 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="gm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Proc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="mouse_TH.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="gm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Proc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
