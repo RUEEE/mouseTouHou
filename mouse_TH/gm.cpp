@@ -28,13 +28,15 @@ void init()
 	Game::allGm[7] = Game(10,		0x00477834, 0x3CC,		(float*)0x00476F78, 0.065f, 0.125f, 0.635f, 0.93125f, L"th10.exe",100.0f);
 	Game::allGm[8] = Game(10,		0x00477834, 0x3CC,		(float*)0x00476F78, 0.065f, 0.125f, 0.635f, 0.93125f, L"th10c.exe",100.0f);
 
-	Game::allGm[9] = Game(8,		0x017D61AC ,0x0,		(float*)0x017CE8E0, 0.065f, 0.125f, 0.635f, 0.93125f, L"th08.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
+	Game::allGm[9] = Game(8,		0x017D61AC ,0x0,		(float*)0x017CE8E0, 0.065f, 0.085f, 0.635f, 0.93125f, L"th08.exe",				 1.0f, 8.0f,376.0f,16.0f,432.0f);
 
-	Game::allGm[10] = Game(7,		0x004BE408 ,0x0,		(float*)0x00575AC8, 0.065f, 0.125f, 0.635f, 0.93125f, L"th07.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
+	Game::allGm[10] = Game(7,		0x004BE408 ,0x0,		(float*)0x00575AC8, 0.065f, 0.085f, 0.635f, 0.93125f, L"th07.exe",				1.0f, 8.0f,376.0f,16.0f,432.0f);
 
-	Game::allGm[11] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.125f, 0.635f, 0.93125f, L"“Œ•ûg–‚‹½.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
-	Game::allGm[12] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.125f, 0.635f, 0.93125f, L"th06.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
-	Game::allGm[13] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.125f, 0.635f, 0.93125f, L"–|·½¼tÄ§à_.exe", 1.0f, 8.0f,376.0f,16.0f,432.0f);
+	Game::allGm[11] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.085f,	0.635f, 0.93125f, L"“Œ•ûg–‚‹½.exe",		1.0f, 8.0f,376.0f,16.0f,432.0f);
+	Game::allGm[12] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.085f, 0.635f, 0.93125f, L"th06.exe",				1.0f, 8.0f,376.0f,16.0f,432.0f);
+	Game::allGm[13] = Game(6,		0x006CAA68 ,0x0,		(float*)0x006C6EC0, 0.065f, 0.085f, 0.635f, 0.93125f, L"–|·½¼tÄ§à_.exe",		1.0f, 8.0f,376.0f,16.0f,432.0f);
+	
+	Game::allGm[14] = Game(11,		-1			 ,0x0,		(float*)0x004A7948, 0.065f, 0.125f, 0.635f, 0.93125f, L"th11.exe");
 }
 
 void GetGame(HANDLE &gmHwnd, int &GmNum,int& pid,int &ArrNum)
@@ -54,6 +56,28 @@ void GetGame(HANDLE &gmHwnd, int &GmNum,int& pid,int &ArrNum)
 	}
 	WIND_HWND = ReturnWnd(pid);
 }
+BYTE th11Chg1[12] = { 0xE9,0xD6,0xA6,0x05,0x00,0x90,0x90,0x90,0x90,0x90,0x90,0x90 };
+BYTE th11Chg2[28] = { 0x8B,0x35,0x34,0xAE,0x48,0x00,0xA1,0x38,0xAE,0x48,0x00,0x89,0xB5,0x88,0x08,0x00,0x00,0x89,0x85,0x8C,0x08,0x00,0x00,0xE9,0x15,0x59,0xFA,0xFF };
+
+void init2()
+{
+	switch (NW_GAME)
+	{
+	case 11:
+	{
+		DWORD oldProtect, oldProtect2;
+		VirtualProtect((LPVOID)0x0043073A, 0x20, PAGE_EXECUTE_READWRITE, &oldProtect);
+		WriteProcessMemory(GM_HWND, (LPVOID)0x0043073A, th11Chg1, sizeof(th11Chg1), NULL);
+		VirtualProtect((LPVOID)0x0043073A, 0x20, oldProtect, &oldProtect2);
+
+		VirtualProtect((LPVOID)0x0048AE15, 0x20, PAGE_EXECUTE_READWRITE, &oldProtect);
+		WriteProcessMemory(GM_HWND, (LPVOID)0x0048AE15, th11Chg2, sizeof(th11Chg2), NULL);
+	}
+	break;
+	default:
+		break;
+	}
+}
 
 DWORD Game::isInGm()
 {
@@ -68,6 +92,7 @@ DWORD Game::isInGm()
 	case 16:
 		ReadProcessMemory(GM_HWND, (LPCVOID)this->ptPlBasic, &ptPl, sizeof(DWORD), NULL);
 		break;
+	case 11:
 	case 8:
 	case 7:
 	case 6:
@@ -112,6 +137,15 @@ int Game::MouseControl()
 
 	switch (this->num)
 	{
+	case 11:
+	{
+		int finalX, finalY;
+		finalX = (int)(this->StageXMin + relX * StageXSz) * ratio;
+		finalY = (int)(this->StageYMin + relY * StageYSz) * ratio;
+		WriteProcessMemory(GM_HWND, (LPVOID)0x0048AE34, &finalX, sizeof(DWORD), NULL);
+		WriteProcessMemory(GM_HWND, (LPVOID)0x0048AE38, &finalY, sizeof(DWORD), NULL);
+	}
+		break;
 	case 10:
 	case 12:
 	case 13:

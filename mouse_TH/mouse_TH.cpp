@@ -15,6 +15,7 @@ int main()
 	int timeNw,timePre;
 	init();
 	GetGame(GM_HWND, NW_GAME,PID, ARR_NUM);
+	init2();
 	timePre = GetTickCount();
 	if (GM_HWND != NULL)
 	{
@@ -23,7 +24,7 @@ int main()
 		Game& nwGame = Game::allGm[ARR_NUM];
 		while (1){
 			timeNw = GetTickCount();
-			if (timeNw - timePre >= 1){
+			if (timeNw-timePre>=1){
 				system("cls");
 				timePre = timeNw;
 				switch (nwGame.MouseControl())

@@ -1,7 +1,7 @@
 
 void GetGame(HANDLE &gmHwnd, int &Gmnum,int& pid,int& arr_num);
 void init();
-
+void init2();
 class Game
 {
 public:
