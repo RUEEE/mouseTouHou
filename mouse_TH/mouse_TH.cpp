@@ -3,6 +3,9 @@
 
 #include "pch.h"
 #include "gm.h"
+
+#define IS_FAST 1
+
 using namespace std;
 extern HANDLE GM_HWND;
 extern int NW_GAME;
@@ -24,8 +27,14 @@ int main()
 		Game& nwGame = Game::allGm[ARR_NUM];
 		while (1){
 			timeNw = GetTickCount();
-			if (timeNw-timePre>=1){
+			int isf = 0;
+	#ifdef IS_FAST
+			isf = 0;
+	#endif
+			if (isf || timeNw-timePre>=10){
+#ifndef IS_FAST
 				system("cls");
+#endif
 				timePre = timeNw;
 				switch (nwGame.MouseControl())
 				{
