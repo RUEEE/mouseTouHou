@@ -9,9 +9,17 @@ int PID;
 int ARR_NUM;
 HWND WIND_HWND;
 Game Game::allGm[40];
-
+int NORMAL_MOUSE_SPEED;
+int SLOW_MOUSE_SPEED;
 void init()
 {
+	bool i= SystemParametersInfo(SPI_GETMOUSESPEED, 0, &NORMAL_MOUSE_SPEED, SPIF_SENDCHANGE);
+	if (!i)
+	{
+		NORMAL_MOUSE_SPEED = -1;
+	}
+	SLOW_MOUSE_SPEED =(int)floor(((float)NORMAL_MOUSE_SPEED*0.4f)+0.5f);//四舍五入
+	//存储默认鼠标速度
 	//						版本号	pt自机		offsX坐标	pt游戏速度			xy最大最小值						窗口名
 	Game::allGm[0] = Game(12,		0x004B4514, 0x988,		(float*)0x004B2ED0, 0.065f, 0.125f, 0.635f, 0.93125f, L"th12c.exe");
 	Game::allGm[1] = Game(12,		0x004B4514, 0x988,		(float*)0x004B2ED0, 0.065f, 0.125f, 0.635f, 0.93125f, L"th12.exe");
