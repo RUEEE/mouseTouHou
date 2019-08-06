@@ -3,9 +3,7 @@
 
 #include "pch.h"
 #include "gm.h"
-
-//#define IS_FAST 1
-
+#pragma GCC optimize(2)
 using namespace std;
 extern HANDLE GM_HWND;
 extern int NW_GAME;
@@ -18,7 +16,7 @@ extern int SLOW_MOUSE_SPEED;
 void setMouseSpeed()
 {
 	int k;
-	if (0x8000 & GetKeyState(VK_SHIFT))
+	if (GetAsyncKeyState(VK_LSHIFT))
 	{
 		k = SystemParametersInfo(SPI_SETMOUSESPEED, 0, (void*)SLOW_MOUSE_SPEED, SPIF_SENDCHANGE);
 	}
@@ -29,11 +27,8 @@ void setMouseSpeed()
 
 }
 
-
 int main()
 {
-	int timeNw,timePre;
-	
 	init();
 	if (NORMAL_MOUSE_SPEED == -1)
 	{
@@ -42,32 +37,28 @@ int main()
 	}
 	GetGame(GM_HWND, NW_GAME,PID, ARR_NUM);
 	init2();
-	timePre = GetTickCount();
 	if (GM_HWND != NULL)
 	{
 		wsprintf(OUT_TEXT,L"进程pid号:%d\n当前游戏版本:%d\n默认鼠标速度:%d\n请不要在按shift的时候关闭程序\n如有意外请使用「控制面板」\n对数位板等无效请注意", PID, Game::allGm[ARR_NUM].num,NORMAL_MOUSE_SPEED);
 		MessageBox(NULL, OUT_TEXT, L"加载成功", MB_OK);
 		Game& nwGame = Game::allGm[ARR_NUM];
+		ios::sync_with_stdio(0);
 		while (1){
 			setMouseSpeed();
-			timeNw = GetTickCount();
-			if (timeNw-timePre>=10){
-#ifndef IS_FAST
+			switch (nwGame.MouseControl())
+			{
+			case PAUSE_FLAG:
 				system("cls");
-#endif
-				timePre = timeNw;
-				switch (nwGame.MouseControl())
-				{
-				case NORMAL_FLAG:
-					break;
-				case PAUSE_FLAG:
-					cout << "时停中不能移动da☆ze";
-					break;
-				case NOT_IN_GAME_FLAG:
-					cout << "未发现自机坐标,请进入游戏\n";
-					Sleep(100);
-					break;
-				}
+				cout << "时停中不能移动";
+				break;
+			case NOT_IN_GAME_FLAG:
+				system("cls");
+				cout << "未发现自机坐标,请进入游戏\n";
+				Sleep(16);
+				break;
+			default:
+			case NORMAL_FLAG:
+				break;
 			}
 		}
 	}

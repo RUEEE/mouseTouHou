@@ -207,7 +207,6 @@ int Game::MouseControl()
 		WriteProcessMemory(GM_HWND, (LPVOID)(ptPl + this->ptPloffs), &finalX, sizeof(DWORD), NULL);
 		WriteProcessMemory(GM_HWND, (LPVOID)(ptPl + this->ptPloffs + 4), &finalY, sizeof(DWORD), NULL);
 	}
-
 		break;
 	case -102:
 	case 8:
