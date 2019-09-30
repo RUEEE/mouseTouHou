@@ -14,8 +14,11 @@ BOOL CALLBACK lpEnumFunc(HWND hwnd, LPARAM lParam)
 	GetWindowThreadProcessId(hwnd, &processId);
 	if (processId == pArg->dwProcessId)
 	{
-		pArg->hWnd = hwnd;
-		return FALSE;
+		DWORD style = (DWORD)GetWindowLong(hwnd, GWL_STYLE);
+		if (style & WS_VISIBLE) {
+			pArg->hWnd = hwnd;
+			return FALSE;
+		}
 	}
 	return TRUE;
 }
