@@ -47,7 +47,7 @@ void init()
 	Game::allGm[25] = Game(17,		0x004B77D0, 0x61C,		(float*)-1, 0.065f, 0.125f, 0.635f, 0.93125f        , L"th17.exe");
 	Game::allGm[26] = Game(18,		0x004CF410, 0x62C,		(float*)-1, 0.065f, 0.125f, 0.635f, 0.93125f        , L"th18.exe");
 	Game::allGm[27] = Game(185,		0x004D7C3C, 0x62C,		(float*)-1, 0.215f, 0.125f, 0.785f, 0.93125f		, L"th185.exe");
-
+	Game::allGm[27] = Game(19,		0x005AE474, 0x698,		(float*)-1, 0.043f, 0.15f,  0.475f, 0.93125f		, L"th19.exe",			128.0f,-140.0f,140.0f,32.0f,432.0f);
 
 	Game::allGm[15] = Game(-100,	0x00FE2350,0x0,			(float*)-1		   ,0.065f, 0.125f, 0.635f, 0.93125f, L"thsg.exe",				1.0f,10.0f,374.0f,32.0f,433.0f);
 	//水晶宫
@@ -116,6 +116,7 @@ DWORD Game::isInGm()
 	case 17:
 	case 18:
 	case 165:
+	case 19:
 		ReadProcessMemory(GM_HWND, (LPCVOID)this->ptPlBasic, &ptPl, sizeof(DWORD), NULL);
 		break;
 	case -102:
@@ -162,6 +163,9 @@ int Game::MouseControl()
 	if (relX > this->xmax)relX = this->xmax;
 	if (relY < this->ymin)relY = this->ymin;
 	if (relY > this->ymax)relY = this->ymax;
+
+	//std::cout << relX << " " << relY<<std::endl;
+
 	relX = (relX - this->xmin) / xsz;
 	relY = (relY - this->ymin) / ysz;
 
@@ -209,6 +213,7 @@ int Game::MouseControl()
 	case 18:
 	case 165:
 	case 185:
+	case 19:
 	{
 		int finalX, finalY;
 		finalX = (int)(this->StageXMin + relX * StageXSz) * ratio;
